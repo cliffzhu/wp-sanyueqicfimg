@@ -37,6 +37,7 @@ add_filter('wp_unique_filename', 'wpsanyueimg_unique_filename');
 # 删除文件时触发删除远端文件，该删除会默认删除缩略图
 add_action('delete_attachment', 'wpsanyueimg_delete_remote_attachment');
 add_filter('wp_get_attachment_url', 'wpsanyueimg_filter_attachment_url', 10, 2);
+add_filter('image_downsize', 'wpsanyueimg_filter_image_downsize', 10, 3);
 
 # 插件自动更新（读取自定义更新源）
 add_filter( 'pre_set_site_transient_update_plugins', 'wpsanyueimg_check_plugin_update' );
@@ -89,4 +90,93 @@ function wpsanyueimg_filter_attachment_url( $url, $post_id ) {
 		return $remote_url;
 	}
 	return $url;
+}
+
+function wpsanyueimg_filter_image_downsize( $downsize, $attachment_id, $size ) {
+	if ( false !== $downsize ) {
+		return $downsize;
+	}
+
+	$remote_url = (string) get_post_meta( $attachment_id, '_wpsanyueimg_remote_url', true );
+	if ( '' === $remote_url ) {
+		return $downsize;
+	}
+
+	$metadata = wp_get_attachment_metadata( $attachment_id );
+	if ( ! is_array( $metadata ) || empty( $metadata ) ) {
+		return $downsize;
+	}
+
+	$image_url = wpsanyueimg_get_remote_image_size_url( $attachment_id, $size, $metadata );
+	if ( '' === $image_url ) {
+		return $downsize;
+	}
+
+	$width = 0;
+	$height = 0;
+	$is_intermediate = false;
+
+	if ( is_array( $size ) ) {
+		$width = (int) ( $size[0] ?? 0 );
+		$height = (int) ( $size[1] ?? 0 );
+		$is_intermediate = true;
+	} else {
+		$size_name = (string) $size;
+		if ( 'full' === $size_name ) {
+			$width = isset( $metadata['width'] ) ? (int) $metadata['width'] : 0;
+			$height = isset( $metadata['height'] ) ? (int) $metadata['height'] : 0;
+			$is_intermediate = false;
+		} elseif ( isset( $metadata['sizes'][ $size_name ] ) ) {
+			$width = isset( $metadata['sizes'][ $size_name ]['width'] ) ? (int) $metadata['sizes'][ $size_name ]['width'] : 0;
+			$height = isset( $metadata['sizes'][ $size_name ]['height'] ) ? (int) $metadata['sizes'][ $size_name ]['height'] : 0;
+			$is_intermediate = true;
+		}
+	}
+
+	return array( $image_url, $width, $height, $is_intermediate );
+}
+
+function wpsanyueimg_get_remote_image_size_url( $attachment_id, $size, $metadata ) {
+	$remote_map = get_post_meta( $attachment_id, '_wpsanyueimg_remote_map', true );
+	if ( ! is_array( $remote_map ) ) {
+		$remote_map = array();
+	}
+
+	if ( is_string( $size ) && 'full' === $size ) {
+		return (string) get_post_meta( $attachment_id, '_wpsanyueimg_remote_url', true );
+	}
+
+	$size_name = is_array( $size ) ? '' : (string) $size;
+	$size_info = null;
+
+	if ( '' !== $size_name && isset( $metadata['sizes'][ $size_name ] ) ) {
+		$size_info = $metadata['sizes'][ $size_name ];
+	}
+
+	if ( ! is_array( $size_info ) || empty( $size_info['file'] ) ) {
+		return '';
+	}
+
+	$local_key = ltrim( dirname( $metadata['file'] ) . '/' . $size_info['file'], '/' );
+	$remote_key = '';
+
+	if ( isset( $remote_map[ $local_key ] ) && '' !== (string) $remote_map[ $local_key ] ) {
+		$remote_key = (string) $remote_map[ $local_key ];
+	}
+
+	if ( '' === $remote_key ) {
+		return '';
+	}
+
+	$options = wpsanyueimg_get_options();
+	$base_url = '';
+	if ( is_array( $options ) && ! empty( $options['imgbed_base_url'] ) ) {
+		$base_url = rtrim( esc_url_raw( (string) $options['imgbed_base_url'] ), '/' );
+	}
+
+	if ( '' === $base_url ) {
+		return '';
+	}
+
+	return $base_url . '/file/' . ltrim( $remote_key, '/' );
 }

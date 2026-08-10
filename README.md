@@ -16,9 +16,9 @@ WordPress 媒体库对接 [CloudFlare ImgBed](https://cfbed.sanyue.de/) 的插�
 
 ## 安装
 
-1. 下载仓库的.zip压缩包
-![alt text](https://cfimgbed-cncdn.236668.xyz/file/1772471821628.webp)
-2. 在 WordPress 后台上传并启动插件。
+1. 从本仓库下载 ZIP 包，或将仓库克隆到 WordPress 插件目录：
+   - `wp-content/plugins/wp-sanyueqicfimg`
+2. 在 WordPress 后台启用插件。
 3. 进入：`设置 -> CloudFlare-ImgBed 存储设置`，完成基础配置。
 
 ## 基础配置

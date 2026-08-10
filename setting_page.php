@@ -74,7 +74,7 @@ function wpsanyueimg_setting_page() {
 <div class="wrap">
 	<h1>cloudflare-ImgBed 存储设置</h1>
 	<p>
-		<a href="https://github.com/imysen/wp-sanyueqicfimg" target="_blank">项目主页</a> |
+		<a href="https://github.com/cliffzhu/wp-sanyueqicfimg" target="_blank">项目主页</a> |
 		<a href="https://cfbed.sanyue.de/" target="_blank">CloudFlare-imgbed 项目文档</a>
 	</p>
 
@@ -293,7 +293,7 @@ function wpsanyueimg_setting_page() {
 
 	function showUpdatePopup(data, allowApply) {
 		var changelog = data.changelog ? String(data.changelog).replace(/</g, '&lt;').replace(/>/g, '&gt;') : '暂无更新说明';
-		var releaseUrl = data.github_release_url || data.homepage || 'https://github.com/imysen/wp-sanyueqicfimg/releases';
+			var releaseUrl = data.github_release_url || data.homepage || 'https://github.com/cliffzhu/wp-sanyueqicfimg/releases';
 		var askLine = allowApply ? '是否立即更新？' : '自动更新未开启，当前仅展示版本信息。';
 		var html = '' +
 			'<div>检测到新版本：<strong>' + String(data.current_version || '-') + '</strong> → <strong>' + String(data.new_version || '-') + '</strong></div>' +

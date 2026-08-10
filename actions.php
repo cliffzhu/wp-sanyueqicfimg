@@ -159,7 +159,7 @@ function wpsanyueimg_check_plugin_update( $transient ) {
 		'slug'         => WPSANYUEIMG_BASEFOLDER,
 		'plugin'       => WPSANYUEIMG_PLUGIN_FILE,
 		'new_version'  => $remote_version,
-		'url'          => ! empty( $meta['homepage'] ) ? $meta['homepage'] : 'https://github.com/imysen/wp-sanyueqicfimg',
+		'url'          => ! empty( $meta['homepage'] ) ? $meta['homepage'] : 'https://github.com/cliffzhu/wp-sanyueqicfimg',
 		'package'      => $meta['download_url'],
 		'tested'       => $meta['tested'] ?? '',
 		'requires'     => $meta['requires'] ?? '',
@@ -189,7 +189,7 @@ function wpsanyueimg_plugins_api( $result, $action, $args ) {
 		'slug'          => WPSANYUEIMG_BASEFOLDER,
 		'version'       => $meta['new_version'],
 		'author'        => '<a href="https://blog.imysen.com">邹云森森</a>',
-		'homepage'      => ! empty( $meta['homepage'] ) ? $meta['homepage'] : 'https://github.com/imysen/wp-sanyueqicfimg',
+		'homepage'      => ! empty( $meta['homepage'] ) ? $meta['homepage'] : 'https://github.com/cliffzhu/wp-sanyueqicfimg',
 		'download_link' => $meta['download_url'],
 		'requires'      => $meta['requires'] ?? '',
 		'requires_php'  => $meta['requires_php'] ?? '',
@@ -228,7 +228,7 @@ function wpsanyueimg_get_update_summary() {
 	$remote_version = wpsanyueimg_normalize_version( $meta['new_version'] ?? '' );
 	$has_update = '' !== $remote_version && version_compare( $remote_version, $current_version, '>' );
 
-	$homepage = ! empty( $meta['homepage'] ) ? esc_url_raw( (string) $meta['homepage'] ) : 'https://github.com/imysen/wp-sanyueqicfimg';
+	$homepage = ! empty( $meta['homepage'] ) ? esc_url_raw( (string) $meta['homepage'] ) : 'https://github.com/cliffzhu/wp-sanyueqicfimg';
 	$release_url = '';
 	if ( '' !== $homepage ) {
 		$release_url = trailingslashit( untrailingslashit( $homepage ) ) . 'releases';
